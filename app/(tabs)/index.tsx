@@ -5,13 +5,15 @@ import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 
+import { useImagePrompt } from "@/hooks/useImagePrompt";
 import ChatInput from "../components/chatInput";
 import ChatMessage from "../components/chatMessage";
 import UserMessage from "../components/userMessage";
 import { ChatMessageModel } from "../models/chat-models";
 
+
 export default function HomeScreen() {
-  const [inputText, setInputText] = useState("");
+  const { pickImage, takePhoto } = useImagePrompt();
   const [messages, setMessages] = useState<ChatMessageModel[]>([
     {
       text: "Hola, soy tu asistente contable, en que puedo ayudarte?",
@@ -46,6 +48,29 @@ export default function HomeScreen() {
     setMessages((prev) => [...prev, { text, isUser: true }]);
   };
 
+  const onSelectImage = async () => {
+    console.log("🔍 BUTTON CLICKED - onSelectImage started");
+    try {
+      console.log("🔍 About to call pickImage...");
+      const img = await pickImage({ quality: 0.8 });
+      console.log("🔍 pickImage completed. Result:", img);
+      if (!img) {
+        console.log("🔍 No image selected or cancelled");
+        return;
+      }
+    
+    // Agregar mensaje de usuario con la imagen
+    setMessages((prev) => [...prev, { 
+      text: "📷 Procesando imagen... ", 
+      isUser: true 
+    }]);
+    
+
+    } catch (error) {
+      console.error("🔍 ERROR in onSelectImage:", error);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ParallaxScrollView
@@ -74,7 +99,13 @@ export default function HomeScreen() {
         />
       </ParallaxScrollView>
 
-      <ChatInput onSend={onSend} />
+      <ChatInput
+        onSend={onSend}
+        onPressImage={onSelectImage}
+        onPressMic={() => {
+          /* grabación futura */
+        }}
+      />
     </View>
   );
 }

@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Necesitamos acceder a la cámara para tomar fotos y enviarlas en el chat.",
+        "NSPhotoLibraryUsageDescription": "Necesitamos acceder a tus fotos para enviarlas en el chat."
+      }
     },
     "android": {
       "adaptiveIcon": {
